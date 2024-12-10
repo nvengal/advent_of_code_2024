@@ -15,7 +15,7 @@ class Node
   def leaves
     return [self] if edges.empty?
 
-    edges.map(&:leaves).flatten.uniq
+    edges.map(&:leaves).flatten
   end
 end
 
@@ -47,4 +47,5 @@ end.each do |line|
   current_line = []
 end
 
-puts trailheads.map(&:leaves).flatten.count { _1.value == 9 }
+puts "score: " + trailheads.map { _1.leaves.uniq }.flatten.count { _1.value == 9 }.to_s
+puts "rating: " + trailheads.map { _1.leaves }.flatten.count { _1.value == 9 }.to_s
