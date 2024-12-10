@@ -10,21 +10,29 @@ class Report
   end
 
   def valid?
-    return true if report.count < 2
+    _valid? || Report.new(report.reverse)._valid?
+  end
 
-    diff = report[1] - report[0]
-    diff >= 1 && diff <= 3 && Report.new(report[1..]).valid?
+  def _valid?
+    valid_pair?(*report[..1]) && rest_is_valid?(report[1..])
+  end
+
+  private
+
+  def valid_pair?(a, b)
+    diff = b - a
+    diff >= 1 && diff <= 3
+  end
+
+  def rest_is_valid?(rest)
+    return true if rest.count < 2
+
+    valid_pair?(*rest[..1]) && rest_is_valid?(rest[1..])
   end
 end
 
 reports = File.readlines('input.txt', chomp: true).map do |line|
-  line.split(/ +/).map(&:to_i)
-end.map do |report|
-  if report.first > report.last
-    Report.new report.reverse
-  else
-    Report.new report
-  end
+  Report.new line.split(/ +/).map(&:to_i)
 end
 
 puts reports.filter { _1.valid? }.count
