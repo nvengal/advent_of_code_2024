@@ -7,7 +7,7 @@ class Grid
   end
 
   def matches
-    (horizontal + vertical + diagonal).count { _1 == 'XMAS' }
+    diagonal.count { _1 == 'MAS' } == 2
   end
 
   private
@@ -23,10 +23,10 @@ class Grid
   end
 
   def diagonal
-    return [] if grid.length != 4 || grid[0].length != 4
+    return [] if grid.length != 3 || grid[0].length != 3
 
-    a = grid[0][0] + grid[1][1] + grid[2][2] + grid[3][3]
-    b = grid[0][-1] + grid[1][-2] + grid[2][-3] + grid[3][-4]
+    a = grid[0][0] + grid[1][1] + grid[2][2]
+    b = grid[0][-1] + grid[1][-2] + grid[2][-3]
     [a, a.reverse, b, b.reverse]
   end
 
@@ -39,9 +39,9 @@ grid = File.readlines('input.txt', chomp: true).map(&:chars)
 
 matches = (0...grid.length).map do |i|
   (0...grid.first.length).map do |j|
-    g1 = grid[i..(i+3)].map { _1[j..(j+3)] }
+    g1 = grid[i..(i+2)].map { _1[j..(j+2)] }
     Grid.new(g1).matches
   end
 end.flatten
 
-puts matches.sum
+puts matches.count { _1 }
