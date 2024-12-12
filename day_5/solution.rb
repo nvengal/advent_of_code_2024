@@ -17,8 +17,35 @@ def correct?(pages)
   end
 end
 
+def next_rule(pages)
+  pages.each.with_index do |p, i|
+    rule = @rules[p]
+    next unless rule
+
+    r = rule.find { pages[...i].include?(_1) }
+    next unless r
+
+    return [pages.index(r), i]
+  end
+end
+
 books = lines
   .select { _1.include?(",") }
   .select { correct?(_1.split(",")) }
 
 puts books.map { _1.split(",") }.map { _1[_1.length/2].to_i }.sum
+
+incorrect_books = lines
+  .select { _1.include?(",") }
+  .reject { correct?(_1.split(",")) }
+
+fixed = incorrect_books.map do |book|
+  pages = book.split(",")
+  while !correct?(pages)
+    a, b = next_rule(pages)
+    pages[a], pages[b] = pages[b], pages[a]
+  end
+  pages
+end
+
+puts fixed.map { _1[_1.length/2].to_i }.sum
